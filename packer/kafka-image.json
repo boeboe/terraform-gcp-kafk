@@ -1,0 +1,31 @@
+{
+  "builders": [
+    {
+      "image_name": "packer-kafka",
+      "project_id": "bart-tid-kafka-playground",
+      "source_image_family": "centos-7",
+      "ssh_username": "kafka",
+      "tags": [
+        "ssh"
+      ],
+      "type": "googlecompute",
+      "zone": "europe-west1-b"
+    }
+  ],
+  "provisioners": [
+    {
+      "destination": "/home/kafka",
+      "source": "files/kafka/",
+      "type": "file"
+    },
+    {
+      "destination": "/home/kafka",
+      "source": "files/telegraf/",
+      "type": "file"
+    },
+    {
+      "script": "scripts/kafka-setup.sh",
+      "type": "shell"
+    }
+  ]
+}
