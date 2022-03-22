@@ -6,12 +6,15 @@ resource "google_compute_instance" "influxdb" {
 
   boot_disk {
     initialize_params {
-      image = "packer-influxdb"
+      image = "centos-7"
     }
   }
 
   network_interface {
     subnetwork = var.subnet
+    access_config {
+      // Ephemeral IP
+    }
   }
 
   metadata = {
@@ -30,7 +33,7 @@ resource "google_compute_instance" "grafana" {
 
   boot_disk {
     initialize_params {
-      image = "packer-grafana"
+      image = "centos-7"
     }
   }
 
@@ -54,8 +57,9 @@ output "grafana_instance" {
 }
 
 provider "grafana" {
-  url  = "http://${google_compute_instance.grafana.network_interface.0.access_config.0.nat_ip}:3000/"
-  auth = "admin:password"
+  auth    = "admin:password"
+  url     = "http://${google_compute_instance.grafana.network_interface.0.access_config.0.nat_ip}:3000/"
+  retries = 100
 }
 
 resource "grafana_data_source" "influxdb" {

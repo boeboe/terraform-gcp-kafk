@@ -16,7 +16,7 @@ resource "google_compute_instance" "zookeeper" {
 
   boot_disk {
     initialize_params {
-      image = "packer-zoo"
+      image = "centos-7"
     }
   }
 

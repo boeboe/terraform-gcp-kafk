@@ -1,7 +1,13 @@
 #!/bin/bash
+yum -y install wget
 
-sudo systemctl enable influxd
-sudo systemctl start influxd
+wget https://dl.influxdata.com/influxdb/releases/influxdb-1.8.10.x86_64.rpm
+yum -y localinstall influxdb-1.8.10.x86_64.rpm
+
+systemctl enable influxd
+systemctl start influxd
+
+sleep 5
 
 influx -execute "CREATE DATABASE telegraf_db"
 influx -execute "CREATE USER telegraf_user WITH PASSWORD 'password'"

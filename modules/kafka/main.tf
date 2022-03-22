@@ -24,7 +24,7 @@ resource "google_compute_instance" "kafka-broker" {
 
   boot_disk {
     initialize_params {
-      image = "packer-kafka"
+      image = "centos-7"
     }
   }
 

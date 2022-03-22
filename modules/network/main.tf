@@ -24,7 +24,7 @@ resource "google_compute_subnetwork" "monitoring_subnet" {
   network       = google_compute_network.kafka_vpc.self_link
 }
 
-resource "google_compute_firewall" "allow-internal" {
+resource "google_compute_firewall" "allow_internal" {
   name    = format("%s-allow-internal", google_compute_network.kafka_vpc.name)
   network = google_compute_network.kafka_vpc.name
   allow {
@@ -44,7 +44,7 @@ resource "google_compute_firewall" "allow-internal" {
     google_compute_subnetwork.monitoring_subnet.ip_cidr_range
   ]
 }
-resource "google_compute_firewall" "allow-ssh" {
+resource "google_compute_firewall" "allow_ssh" {
   name    = format("%s-allow-ssh", google_compute_network.kafka_vpc.name)
   network = google_compute_network.kafka_vpc.name
   allow {
@@ -55,7 +55,7 @@ resource "google_compute_firewall" "allow-ssh" {
   target_tags   = ["ssh"]
 }
 
-resource "google_compute_firewall" "allow-http" {
+resource "google_compute_firewall" "allow_http" {
   name    = format("%s-allow-http", google_compute_network.kafka_vpc.name)
   network = google_compute_network.kafka_vpc.name
   allow {
@@ -64,4 +64,18 @@ resource "google_compute_firewall" "allow-http" {
   }
   source_ranges = ["0.0.0.0/0"]
   target_tags   = ["http-server"]
+}
+
+resource "google_compute_router" "router_kafka" {
+  name    = "router-kafka"
+  region  = var.cluster_region
+  network = google_compute_network.kafka_vpc.id
+}
+
+resource "google_compute_router_nat" "nat_router_kafka" {
+  name                               = "nat-router-kafka"
+  router                             = google_compute_router.router_kafka.name
+  region                             = var.cluster_region
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
 }
