@@ -1,3 +1,11 @@
+variable "config" {
+  type = string
+}
+
+variable "data_dir" {
+  type = string
+}
+
 variable "servers" {
   type = number
 }
@@ -7,7 +15,7 @@ variable "subnet" {
 }
 
 variable "zones" {
-  type = list(any)
+  type = list(string)
 }
 
 variable "zookeeper_up" {

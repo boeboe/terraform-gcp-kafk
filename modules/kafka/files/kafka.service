@@ -1,0 +1,18 @@
+[Unit]
+Description=Kafka Daemon
+Documentation=https://kafka.apache.org
+Requires=network.target
+After=network.target
+
+[Service]    
+Type=simple
+WorkingDirectory=/opt/kafka
+User=kafka
+Group=kafka
+ExecStart=/opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/kafka.properties
+ExecStop=/opt/kafka/bin/kafka-server-stop.sh
+Restart=on-abnormal
+TimeoutSec=900
+
+[Install]
+WantedBy=multi-user.target

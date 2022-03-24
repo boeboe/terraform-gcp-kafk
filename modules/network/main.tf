@@ -3,24 +3,24 @@ resource "google_compute_network" "kafka_vpc" {
   auto_create_subnetworks = false
 }
 
-resource "google_compute_subnetwork" "kafka_subnet" {
-  name          = "kafka-subnet"
+resource "google_compute_subnetwork" "kafka_zk_subnet" {
+  name          = "kafka-zk-subnet"
   ip_cidr_range = "10.1.1.0/24"
-  region        = var.cluster_region
+  region        = var.region
   network       = google_compute_network.kafka_vpc.self_link
 }
 
 resource "google_compute_subnetwork" "management_subnet" {
   name          = "management-subnet"
   ip_cidr_range = "10.1.2.0/24"
-  region        = var.cluster_region
+  region        = var.region
   network       = google_compute_network.kafka_vpc.self_link
 }
 
 resource "google_compute_subnetwork" "monitoring_subnet" {
   name          = "monitoring-subnet"
   ip_cidr_range = "10.1.3.0/24"
-  region        = var.cluster_region
+  region        = var.region
   network       = google_compute_network.kafka_vpc.self_link
 }
 
@@ -39,7 +39,7 @@ resource "google_compute_firewall" "allow_internal" {
     ports    = ["0-65535"]
   }
   source_ranges = [
-    google_compute_subnetwork.kafka_subnet.ip_cidr_range,
+    google_compute_subnetwork.kafka_zk_subnet.ip_cidr_range,
     google_compute_subnetwork.management_subnet.ip_cidr_range,
     google_compute_subnetwork.monitoring_subnet.ip_cidr_range
   ]
@@ -68,14 +68,14 @@ resource "google_compute_firewall" "allow_http" {
 
 resource "google_compute_router" "router_kafka" {
   name    = "router-kafka"
-  region  = var.cluster_region
+  region  = var.region
   network = google_compute_network.kafka_vpc.id
 }
 
 resource "google_compute_router_nat" "nat_router_kafka" {
   name                               = "nat-router-kafka"
   router                             = google_compute_router.router_kafka.name
-  region                             = var.cluster_region
+  region                             = var.region
   nat_ip_allocate_option             = "AUTO_ONLY"
   source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
 }

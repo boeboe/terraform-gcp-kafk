@@ -12,6 +12,14 @@ data "template_file" "kafka_startup" {
   template = file("${path.module}/scripts/kafka-startup.sh")
   vars = {
     broker_id = "${count.index + 1}"
+    config    = var.config
+    data_dir  = var.data_dir
+
+    limit_conf             = file("${path.module}/files/limit.conf")
+    systemd_service        = file("${path.module}/files/kafka.service")
+    telegraf_conf          = file("${path.module}/files/telegraf/telegraf.conf")
+    telegrafd_jolokia_conf = file("${path.module}/files/telegraf/jolokia.conf")
+    telegrafd_system_conf  = file("${path.module}/files/telegraf/system.conf")
   }
 }
 
